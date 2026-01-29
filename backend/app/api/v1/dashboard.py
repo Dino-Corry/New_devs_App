@@ -15,11 +15,22 @@ async def get_dashboard_summary(
     
     revenue_data = await get_revenue_summary(property_id, tenant_id)
     
-    total_revenue_float = float(revenue_data['total'])
+    # total_revenue_float = float(revenue_data['total'])
+    
+    # return {
+    #     "property_id": revenue_data['property_id'],
+    #     "total_revenue": total_revenue_float,
+    #     "currency": revenue_data['currency'],
+    #     "reservations_count": revenue_data['count']
+    # }
+
+     # FIX BUG 3: Keep revenue as Decimal string to preserve precision
+    # Don't convert to float which causes precision loss
+    total_revenue_str = revenue_data['total']
     
     return {
         "property_id": revenue_data['property_id'],
-        "total_revenue": total_revenue_float,
+        "total_revenue": total_revenue_str,  # Keep as string to preserve precision
         "currency": revenue_data['currency'],
         "reservations_count": revenue_data['count']
     }

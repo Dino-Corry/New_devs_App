@@ -19,14 +19,27 @@ async def calculate_monthly_revenue(property_id: str, month: int, year: int, db_
     # creates naive local times (effectively treated as database-local time or UTC naive).
     # For a property in UTC+2, a check-in on Mar 1st 00:30 local time is Feb 28th 22:30 UTC.
     # This query will exclude it from March because it compares against strictly generated UTC timestamps.
+
+    # FIX BUG 2: Use timezone-aware datetime objects for proper date filtering
+    # Import timezone utilities
+    from datetime import timezone
     
-    start_date = datetime(year, month, 1)
+    # Create timezone-aware datetime objects in UTC
+    start_date = datetime(year, month, 1, tzinfo=timezone.utc)
     if month < 12:
-        end_date = datetime(year, month + 1, 1)
+        end_date = datetime(year, month + 1, 1, tzinfo=timezone.utc)
     else:
-        end_date = datetime(year + 1, 1, 1)
+        end_date = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
         
-    print(f"DEBUG: Querying revenue for {property_id} from {start_date} to {end_date}")
+    print(f"DEBUG: Querying revenue for {property_id} from {start_date} to {end_date} (timezone-aware)")
+    
+    # start_date = datetime(year, month, 1)
+    # if month < 12:
+    #     end_date = datetime(year, month + 1, 1)
+    # else:
+    #     end_date = datetime(year + 1, 1, 1)
+        
+    # print(f"DEBUG: Querying revenue for {property_id} from {start_date} to {end_date}")
 
     # SQL Simulation (This would be executed against the actual DB)
     query = """
